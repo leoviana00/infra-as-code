@@ -1,0 +1,46 @@
+--- 
+
+- name: Desabilitar swap em todos os nodes
+  hosts: all
+  become: yes
+  
+  roles:
+    - haproxy
+
+- name: Criar usuário ansible em todos os nodes
+  hosts: all
+  become: yes
+  
+  roles:    
+    - usuarios
+
+- name: Instalação e configuração do docker em todos os nodes
+  hosts: all
+  become: yes
+  
+  roles:    
+    - docker
+
+- name: Instalação e configuração kubernetes (kubelet e kubeadm) em todos os nodes
+  hosts: all
+  become: yes
+  
+  roles:
+    - kubernetes
+
+- name: Instalação do kubectl e configuração do cluster
+  hosts: master
+  become: yes
+  
+  roles:
+    - master
+
+- name: Ingressando no cluster
+  hosts: worker
+  become: yes
+  
+  roles:
+    - worker
+
+
+
