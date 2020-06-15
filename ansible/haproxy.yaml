@@ -1,0 +1,46 @@
+---
+- hosts: srv_lb
+  become: yes
+
+  # Variáveis para o arquivo de configuração
+  vars:
+    haproxy_app_name: srv_lb
+    haproxy_mode: http
+    haproxy_enable_stats: enable 
+    haproxy_algorithm: roundrobin
+    haproxy_backend_servers:
+      - {name: srv_mt , ip: 3.80.103.147 , port: 80, paramstring: cookie A check}
+      - {name: srv_svc, ip: 54.83.102.191, port: 80, paramstring: cookie A check}
+    haproxy_stats_users:
+      - {username: ubuntu, password: Info.123}
+
+
+  tasks: 
+    - name: Atualização do sistema
+      apt: update_cache=yes cache_valid_time=3600
+    
+    - name: Instalação do HAproxy
+      apt: name=haproxy state=present
+
+    - name: Ativar script init
+      replace: dest='/etc/default/haproxy' 
+            regexp='ENABLED=0'
+            replace='ENABLED=1'
+
+    - name: Atualização das configurações
+      template: src=templates/haproxy.cfg 
+            dest=/etc/haproxy/haproxy.cfg 
+            backup=yes
+      notify: 
+        - restart haproxy
+
+    - name: Startar e habilitar o HAproxy no boot
+      service: name=haproxy state=started enabled=yes
+    
+  handlers:
+    - name: restart haproxy
+      service: name=haproxy state=restarted
+
+ 
+
+
