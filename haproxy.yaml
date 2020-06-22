@@ -1,20 +1,6 @@
 ---
 - hosts: srv_lb
   become: yes
-
-  # Variáveis para o arquivo de configuração
-  vars:
-    haproxy_app_name: srv_lb
-    haproxy_mode: http
-    haproxy_enable_stats: enable 
-    haproxy_algorithm: roundrobin
-    haproxy_backend_servers:
-      - {name: srv_mt , ip: 3.80.103.147 , port: 80, paramstring: cookie A check}
-      - {name: srv_svc, ip: 54.83.102.191, port: 80, paramstring: cookie A check}
-    haproxy_stats_users:
-      - {username: ubuntu, password: Info.123}
-
-
   tasks: 
     - name: Atualização do sistema
       apt: update_cache=yes cache_valid_time=3600

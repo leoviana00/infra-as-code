@@ -1,0 +1,13 @@
+[servers]
+
+  srv_lb  ansible_ssh_host=3.91.21.178 ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/leoviana/.ssh/id_rsa
+
+  srv_mt  ansible_ssh_host=3.91.157.113  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/leoviana/.ssh/id_rsa
+
+  srv_svc  ansible_ssh_host=54.82.45.164  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/leoviana/.ssh/id_rsa
+
+  srv_graf  ansible_ssh_host=18.209.7.25  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/leoviana/.ssh/id_rsa
+
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

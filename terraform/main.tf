@@ -90,68 +90,96 @@ tags = {
 #--------------------------------------------------------------
 #                            NACL
 #--------------------------------------------------------------
-#                          PÚBLICA
-#--------------------------------------------------------------
 
-resource "aws_network_acl" "Public_NACL" {
+resource "aws_network_acl" "DevOps_NACL" {
   vpc_id = aws_vpc.VPC_CursoDevOps.id
-  subnet_ids = [ aws_subnet.Pub_subnet1.id ]
-  
-  # Todas as políticas liberadas temporariamente
+  subnet_ids = [ aws_subnet.Pub_subnet1.id, aws_subnet.Priv_subnet1.id, aws_subnet.Priv_subnet2.id ]
+  #-----------------------------------------------------------
+  #                    PORTAS EFÊMERAS
+  #-----------------------------------------------------------
   ingress {
-    protocol   = -1
+    protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
+    from_port  = 1024
+    to_port    = 65535
   }
 
-  egress {
-    protocol   = -1
+   egress {
+    protocol   = "tcp"
     rule_no    = 100
     action     = "allow"
     cidr_block = "0.0.0.0/0"
-    from_port  = 0 
-    to_port    = 0
+    from_port  = 1024
+    to_port    = 65535
+  }  
+  #-----------------------------------------------------------
+  #                         HTTP
+  #-----------------------------------------------------------
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 80
+    to_port    = 80
   }
+
+   egress {
+    protocol   = "tcp"
+    rule_no    = 110
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 80 
+    to_port    = 80
+  }
+  #-----------------------------------------------------------
+  #                         HTTPS
+  #-----------------------------------------------------------
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 111
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
+  }
+
+   egress {
+    protocol   = "tcp"
+    rule_no    = 111
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 443
+    to_port    = 443
+  }
+   
+
+  #----------------------------------------------------------
+  #                          SSH
+  #----------------------------------------------------------
+  ingress {
+    protocol   = "tcp"
+    rule_no    = 120
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 22
+    to_port    = 22
+  }
+
+   egress {
+    protocol   = "tcp"
+    rule_no    = 120
+    action     = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port  = 22 
+    to_port    = 22
+  } 
+  
   
 tags = {
-    Name = "ACL Publica"
-}
-}
-
-#--------------------------------------------------------------
-#                            NACL
-#--------------------------------------------------------------
-#                          PRIVADA
-#--------------------------------------------------------------
-
-resource "aws_network_acl" "Private_NACL" {
-  vpc_id = aws_vpc.VPC_CursoDevOps.id
-  subnet_ids = [ aws_subnet.Priv_subnet1.id, aws_subnet.Priv_subnet2.id ]
-  
-  # Todas as políticas liberadas temporariamente
-  ingress {
-    protocol   = -1
-    rule_no    = 100
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0
-    to_port    = 0
-  }
-
-  egress {
-    protocol   = -1
-    rule_no    = 100
-    action     = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port  = 0 
-    to_port    = 0
-  }
-  
-tags = {
-    Name = "ACL Privada"
+    Name = "ACL-DevOps"
 }
 }
 
@@ -293,6 +321,7 @@ resource "aws_security_group" "srv_svc_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = var.ingressCIDRblock
+  # security_groups = [aws_security_group.srv_lb_sg.id, aws_security_group.srv_mt_sg.id]
   }   
 
   egress {
@@ -300,6 +329,7 @@ resource "aws_security_group" "srv_svc_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = var.egressCIDRblock
+  # security_groups = [aws_security_group.srv_lb_sg.id, aws_security_group.srv_mt_sg.id]
   }
 
 }
@@ -319,10 +349,14 @@ resource "aws_security_group" "srv_mt_sg" {
   
   # Todas as políticas liberadas temporariamente
   ingress {
+    description = "Todas as politicas liberadas temporariamente"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = var.ingressCIDRblock
+   # security_groups = [aws_security_group.srv_lb_sg.id]
+   # security_groups = [aws_security_group.srv_lb_sg.id, aws_security_group.srv_svc_sg.id]
+    
   }   
 
   egress {
@@ -330,6 +364,8 @@ resource "aws_security_group" "srv_mt_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = var.egressCIDRblock
+  # security_groups = [aws_security_group.srv_lb_sg.id]
+  # security_groups = [aws_security_group.srv_lb_sg.id, aws_security_group.srv_svc_sg.id]
   }
 
 }
@@ -405,3 +441,4 @@ resource "aws_instance" "mt_ec2" {
         Name = "SRV_MT"
     }   
 }
+

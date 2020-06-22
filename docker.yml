@@ -1,0 +1,164 @@
+---
+- hosts: srv_svc
+  become: yes
+  vars:
+    CTOP_VERSION: "0.7.3"
+    DOCKER_COMPOSE_VERSION: "1.25.1"
+    #-------------------------------
+    # VARIÁVEIS PYTHON
+    #-------------------------------
+    PYTHON_PACKAGES:
+      - gcc
+      - python3-setuptools
+      - python3-dev
+      - python3-pip
+      - virtualenv
+    
+    #-------------------------------
+    # VARIÁVEIS DOCKER
+    #-------------------------------
+    DOCKER_PACKAGES:
+      - apt-transport-https
+      - ca-certificates
+      - cron
+      - gnupg2
+      - curl
+      - gnupg-agent
+      - software-properties-common
+
+    #-------------------------------  
+    # VARIÁVEIS APLICAÇÕES
+    #-------------------------------
+    SOFTWARES:
+      - mcedit
+      - nfs-common
+      - nano
+      - net-tools
+
+    #-------------------------------
+    # VARIÁVEIS USUÁRIO 
+    #------------------------------- 
+    USER: ubuntu
+    
+    #-------------------------------
+    # VERSÃO DO DOCKER
+    #-------------------------------
+    docker__edition: "ce"
+    docker__channel: ["stable"]
+    docker__version: ""
+    docker__state: "present"
+    
+    #-------------------------------
+    # VARIÁVEIS REPOSITÓRIO DOCKER 
+    #-------------------------------
+    docker__architecture_map:
+      "x86_64": "amd64"
+      "aarch": "arm64"
+      "armhf": "armhf"
+      "armv7l": "armhf"
+
+    docker__apt_key_id: "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
+    docker__apt_key_url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
+    docker__apt_repository: >
+      deb [arch={{ docker__architecture_map[ansible_architecture] }}]
+      https://download.docker.com/linux/{{ ansible_distribution | lower }}
+      {{ ansible_distribution_release }} {{ docker__channel | join ('') }}
+    
+    #-------------------------------  
+    # VARIÁVEIS para criação dos containers
+    #-------------------------------
+    default_container_name: app_docker-desafio
+    default_container_image: leoviana00/desafio_prod
+    default_container_command: sleep 1
+    PORT: "8080"
+    APP_PORT: "8080"
+
+  tasks:
+
+  - name: Atualização do sistema
+    apt: update_cache=yes cache_valid_time=3600
+
+  - name: Instalação das dependências Python
+    apt:
+      name: "{{ PYTHON_PACKAGES }}"
+      state: present
+      force_apt_get: "yes"
+  
+  - name: Instalação das dependências Docker
+    apt:
+      name: "{{ DOCKER_PACKAGES }}"
+      state: present
+      force_apt_get: "yes"
+
+  - name: Instalação do mcedit, nfs-common, nano e net-tools.
+    apt:
+      name: "{{ SOFTWARES }}"
+      state: present
+      force_apt_get: "yes"
+
+  - name: Adicione a chave pública GPG do Docker ao chaveiro APT
+    apt_key:
+      id: "{{ docker__apt_key_id }}"
+      url: "{{ docker__apt_key_url }}"
+
+  - name: Adicionar o repositório Docker
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu bionic stable
+      state: present
+
+  - name: Install Docker
+    apt:
+      name: "docker-{{ docker__edition }}"
+      state: "{{ docker__state }}" 
+    notify:
+      - Restart Docker
+
+  - name: Install Python packages
+    pip:
+      name: docker
+      state: present
+  
+  - name: Criar docker group
+    group:
+      name: "docker"
+      state: present
+
+  - name: Adicionar usuário {{ USER }} ao grupo docker  
+    user:
+      name: ubuntu
+      groups: "docker"
+      append: "yes"
+
+  - name: Instalar Docker Compose
+    get_url:
+      url: https://github.com/docker/compose/releases/download/{{ DOCKER_COMPOSE_VERSION }}/docker-compose-Linux-x86_64
+      dest: "/usr/local/bin/docker-compose"
+      mode: 0755
+
+  - name: Instalar Ctop 
+    get_url:
+      url: https://github.com/bcicen/ctop/releases/download/v{{ CTOP_VERSION }}/ctop-{{ CTOP_VERSION }}-linux-amd64
+      dest: "/usr/local/bin/ctop"
+      mode: 0755 
+      
+    #------------------------------------
+    # Deploy do app-spring do desafio 1
+    #------------------------------------
+  - name: Criar containers
+    docker_container:
+      name: "{{ default_container_name}}"
+      image: "{{ default_container_image }}"
+      command: "{{ default_container_command }}"
+      recreate: yes
+      restart_policy: always  
+      ports:
+          - "{{ PORT }}:{{ APP_PORT }}"
+      exposed_ports:
+          - "{{ PORT }}"
+      state: started  
+
+  handlers:
+  - name: Restart Docker
+    service:
+      name: docker
+      state: restarted

@@ -1,0 +1,49 @@
+- hosts: all
+  become: yes
+  vars:
+    zabbix_server: "10.0.3.186"
+
+  tasks:
+  - name: Removendo Zabbix-Agent
+    apt: 
+      name: zabbix-agent
+      state: absent
+  
+  - name: Instalação do zabbix agent
+    apt: 
+      name: zabbix-agent 
+      state: latest
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^LogFileSize=0'
+      line: 'LogFileSize=256'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^# EnableRemoteCommands=0'
+      line: 'EnableRemoteCommands=1'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^Server=127.0.0.1'
+      line: 'Server={{ zabbix_server }}'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^ServerActive=127.0.0.1'
+      line: 'ServerActive={{ zabbix_server }}'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^Hostname=Zabbix server'
+     #line: 'Hostname=SVC-LB'
+      line: 'Hostname={{ ansible_hostname }}'
+
+  - lineinfile:
+      path: /etc/zabbix/zabbix_agentd.conf
+      regexp: '^# Timeout=3'
+      line: 'Timeout=3'
+
+  - name: Starting the Zabbix Agent
+    service: name=zabbix-agent state=started enabled=yes
