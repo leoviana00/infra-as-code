@@ -1,4 +1,4 @@
-# Provisionamento de ambiente em cloud
+# Provisionamento de ambiente em cloud com terraform e instalação e configuração de alguns serviços com ansible.
 
 # Provider AWS
 
