@@ -1,3 +1,12 @@
+#---------------------------------------------------------------
+# Informação
+# autor: Leonardo Viana Pereira
+# email: leonardo.viana@armateus.com.br
+# version: 0.1.0
+# Descrição: Criando e configurando uma VPC e instâncias EC2 na AWS
+# Desafio do Curso de DevOps | Ithappens - Referente aos módulos 3 e 4
+#---------------------------------------------------------------
+
 - hosts: all
   become: yes
   vars:
