@@ -42,6 +42,11 @@
       - nfs-common
       - nano
       - net-tools
+      - htop
+      - tmux
+      - dnsutils
+      - git
+      - atop
 
     #-------------------------------
     # VARIÁVEIS USUÁRIO 
