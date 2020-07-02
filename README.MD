@@ -3,6 +3,10 @@
 
 ![](/imagens/terraform-aws.jpeg)
 
+---
+![](/imagens/terraform-aws.jpg)
+
+
 
 # Provisionamento de ambiente em cloud com terraform e instalação e configuração de alguns serviços com ansible.
 
