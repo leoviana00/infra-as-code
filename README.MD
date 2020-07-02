@@ -1,10 +1,11 @@
 
 ## Modelagem do ambiente 
 
-![](/imagens/terraform-aws.jpeg)
+![](/imagens/terraform-aws.jpg)
 
 ---
-![](/imagens/terraform-aws.jpg)
+
+![](/imagens/terraform-aws.jpeg)
 
 
 
