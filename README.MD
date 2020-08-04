@@ -30,7 +30,7 @@
 - Instalar e configurar : docker, mcedit, nfs-common, nano, net-tools
 - Subir um serviço em docker que tenha rota de teste
 
-# 1 Instância para monitoramento (zabbix e grafana )
+# 1 Instância para monitoramento - (zabbix e grafana )
 
 - Instância: T2 MICRO
 - Subnet Privada sem acesso externo: 10.0.3.0/16
