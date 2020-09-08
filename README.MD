@@ -3,7 +3,7 @@
 
 ![](/imagens/terraform-aws.jpg)
 
-----
+---
 
 ![](/imagens/terraform-aws.jpeg)
 
