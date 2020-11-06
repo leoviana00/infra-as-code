@@ -20,8 +20,7 @@
       - python3-setuptools
       - python3-dev
       - python3-pip
-      - virtualenv
-    
+      - virtualenv    
     #-------------------------------
     # VARIÁVEIS DOCKER
     #-------------------------------
@@ -33,7 +32,6 @@
       - curl
       - gnupg-agent
       - software-properties-common
-
     #-------------------------------  
     # VARIÁVEIS APLICAÇÕES
     #-------------------------------
@@ -47,20 +45,17 @@
       - dnsutils
       - git
       - atop
-
     #-------------------------------
     # VARIÁVEIS USUÁRIO 
     #------------------------------- 
-    USER: ubuntu
-    
+    USER: ubuntu    
     #-------------------------------
     # VERSÃO DO DOCKER
     #-------------------------------
     docker__edition: "ce"
     docker__channel: ["stable"]
     docker__version: ""
-    docker__state: "present"
-    
+    docker__state: "present"   
     #-------------------------------
     # VARIÁVEIS REPOSITÓRIO DOCKER 
     #-------------------------------
