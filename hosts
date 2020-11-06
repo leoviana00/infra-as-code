@@ -8,6 +8,5 @@
 
   srv_graf  ansible_ssh_host=18.209.7.25  ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/leoviana/.ssh/id_rsa
 
-
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
