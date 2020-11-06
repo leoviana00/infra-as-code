@@ -14,14 +14,13 @@
 
 ## Modelagem do ambiente 
 - Esquema da arquitetura
-
+```
 ![](/imagens/terraform-aws.jpg)
-
+```
 - Esquema do provisionamento e configuração do ambiente através de código
-
+```
 ![](/imagens/terraform-aws.jpeg)
-
-
+```
 ## Provider AWS: Resources
 - VPC
 ```
