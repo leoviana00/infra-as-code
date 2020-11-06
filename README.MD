@@ -21,13 +21,11 @@
 ![](/imagens/terraform-aws.jpeg)
 
 
-## Provider AWS: 
+## Provider AWS: Resources
 - VPC
 ```
 - vpc : 10.0.0.0/16
 ```
-
-## Elastic Cloud Computer
 - Balanceador - Haproxy
 ```
 - Instância: T2 MICRO
