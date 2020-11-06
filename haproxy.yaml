@@ -11,6 +11,7 @@
 - hosts: srv_lb
   become: yes
   tasks: 
+  
     - name: Atualização do sistema
       apt: update_cache=yes cache_valid_time=3600
     
