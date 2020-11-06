@@ -15,6 +15,7 @@
         grafana_filename: grafana_{{ grafana_version }}_{{ arch }}.deb
     
       tasks:
+      
       - name: Verify version
         command: dpkg-query -W --showformat='${version}' grafana
         register: grafana_check_version
