@@ -13,6 +13,7 @@
     zabbix_server: "10.0.3.186"
 
   tasks:
+  
   - name: Removendo Zabbix-Agent
     apt: 
       name: zabbix-agent
